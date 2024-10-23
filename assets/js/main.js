@@ -1,3 +1,10 @@
+function escapeHTML(str) {
+    return str.replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;")
+              .replace(/"/g, "&quot;")
+              .replace(/'/g, "&#039;");
+}
 const chatApp = {
     api: "https://lemanh-api.onrender.com/testAPI",
     date: new Date(),
@@ -17,6 +24,9 @@ const chatApp = {
             type: 'GET',
             success: function(response) {
                 var html = response.map((content) => {
+                    // Mã hóa nội dung tin nhắn để tránh lỗi hiển thị code
+                    const safeMessage = escapeHTML(content.message);
+    
                     return `
                     <li class="conversation-item me">
                         <div class="conversation-item-side">
@@ -26,7 +36,7 @@ const chatApp = {
                             <div class="conversation-item-wrapper">
                                 <div class="conversation-item-box">
                                     <div class="conversation-item-text">
-                                        <p>${content.message}</p>
+                                        <pre><code>${safeMessage}</code></pre>
                                         <div class="conversation-item-time">${content.date}</div>
                                     </div>
                                     <div class="conversation-item-dropdown">
@@ -40,10 +50,11 @@ const chatApp = {
                 });
                 textMessage.innerHTML = html.join("");
             },
-            error: function(xhr, status, error) {}
+            error: function(xhr, status, error) {
+                console.error("Error fetching messages:", error);
+            }
         });
     },
-    
     submitMessage() {
         var textInput = document.querySelector(".conversation-form-input");
         var submitBtn = document.querySelector(".conversation-form-submit");
@@ -91,7 +102,7 @@ const chatApp = {
     start() {
         this.renderMessage();
         this.submitMessage();
-        this.updateMessage()
+        // this.updateMessage()
     }
 };
 
