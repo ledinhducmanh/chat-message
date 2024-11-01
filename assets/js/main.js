@@ -1,9 +1,12 @@
 function escapeHTML(str) {
-    return str.replace(/&/g, "&amp;")
-              .replace(/</g, "&lt;")
-              .replace(/>/g, "&gt;")
-              .replace(/"/g, "&quot;")
-              .replace(/'/g, "&#039;");
+    const escapeMap = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return str.replace(/[&<>"']/g, match => escapeMap[match]);
 }
 const chatApp = {
     api: "https://lemanh-api.onrender.com/testAPI",
@@ -24,9 +27,7 @@ const chatApp = {
             type: 'GET',
             success: function(response) {
                 var html = response.map((content) => {
-                    // Mã hóa nội dung tin nhắn để tránh lỗi hiển thị code
                     const safeMessage = escapeHTML(content.message);
-    
                     return `
                     <li class="conversation-item me">
                         <div class="conversation-item-side">
@@ -42,6 +43,10 @@ const chatApp = {
                                     <div class="conversation-item-dropdown">
                                         <button onclick="chatApp.deleteMessage(${content.id})" type="button" class="conversation-item-dropdown-toggle"><i class="ri-more-2-line"></i></button>
                                     </div>
+                                    <!-- New copy button -->
+                                    <div class="conversation-item-copy">
+                                        <button type="button" class="copy-button" data-message="${safeMessage}" title="Copy message"><i class="ri-file-copy-line"></i>COPY</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -49,21 +54,39 @@ const chatApp = {
                     `;
                 });
                 textMessage.innerHTML = html.join("");
+    
+                // Attach event listeners for copy buttons
+                document.querySelectorAll('.copy-button').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const message = this.getAttribute('data-message');
+                        chatApp.copyMessage(message);
+                    });
+                });
             },
             error: function(xhr, status, error) {
                 console.error("Error fetching messages:", error);
             }
         });
+        scrollConversation() , 2000
+    },
+    copyMessage(message) {
+        // Create a temporary textarea element to copy text
+        const tempInput = document.createElement("textarea");
+        document.body.appendChild(tempInput);
+        tempInput.value = message; // Set the value to the message
+        tempInput.select(); // Select the text
+        document.execCommand("copy"); // Copy the selected text
+        document.body.removeChild(tempInput); // Remove the temporary element
+        alert("Message copied to clipboard!"); // Feedback for the user
     },
     submitMessage() {
-        var textInput = document.querySelector(".conversation-form-input");
-        var submitBtn = document.querySelector(".conversation-form-submit");
-
+        const textInput = document.querySelector(".conversation-form-input");
+        const submitBtn = document.querySelector(".conversation-form-submit");
+        
         submitBtn.onclick = () => {
-            this.sendMessage(textInput.value); // call sendMessage với giá trị nhập vào
+            this.sendMessage(textInput.value.trim());
         };
     },
-    
     sendMessage(data) {
         let now = new Date();
         let formattedTime = this.formatTime(now);
@@ -74,7 +97,7 @@ const chatApp = {
                 type: 'POST',
                 data: JSON.stringify({
                     name: "Lê Mạnh",
-                    message: data, // truyền ruyền data
+                    message: data,
                     date: formattedTime,
                 }),
                 contentType: 'application/json',
@@ -83,11 +106,10 @@ const chatApp = {
                 },
             });
         } 
-        
     },
     deleteMessage(id) {
         $.ajax({
-            url: `${this.api}`+`/${id}`,
+            url: `${this.api}/${id}`,
             type: 'DELETE',
             success: function() {
                 chatApp.renderMessage();
@@ -96,14 +118,23 @@ const chatApp = {
     },
     updateMessage() {
         setInterval(()=> {
-            this.renderMessage()
-        },9000)
+            this.renderMessage();
+        },9000);
     },
     start() {
         this.renderMessage();
         this.submitMessage();
-        // this.updateMessage()
     }
 };
-
 chatApp.start();
+document.getElementById('scroll-button').addEventListener('click', scrollConversation);
+
+function scrollConversation() {
+    setTimeout(() => {
+        const conversationMain = document.getElementById('conversation-main');
+        conversationMain.scrollTo({
+            top: conversationMain.scrollHeight,
+            behavior: 'smooth'
+        });
+    }, 500)
+}

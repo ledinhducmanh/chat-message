@@ -698,6 +698,10 @@ body {
 }
 
 @media screen and (max-width: 767px) {
+    .scroll-conversation {
+        left: 10px;
+        bottom: 95px !important;
+    }
     .chat-sidebar {
         top: unset;
         bottom: 0;
@@ -778,18 +782,40 @@ pre {
     padding-bottom: 10px;
 }
 /* width */
-::-webkit-scrollbar {
+pre::-webkit-scrollbar {
     height: 5px;
 }
   
 /* Track */
-::-webkit-scrollbar-track {
+pre::-webkit-scrollbar-track {
     background: #ffffff; 
     border-radius: 20px;
 
 }
 /* Handle */
-::-webkit-scrollbar-thumb {
+pre::-webkit-scrollbar-thumb {
     background: #d7d7d7; 
     border-radius: 20px;
+}
+.conversation-item-copy {
+    margin-top: 5px;
+}
+.conversation-item-copy button, .scroll-conversation button {
+    background-color: var(--sky-500);
+    border: none;
+    color: var(--white);
+    border-radius: 5px;
+    padding: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    box-shadow: 0 2px 12px -2px var(--sky-500);
+}
+.conversation-item-copy i {
+    padding-right: 3px;
+}
+.scroll-conversation {
+    position: fixed;
+    z-index: 10;
+    right: 50px;
+    bottom: 100px;
 }
