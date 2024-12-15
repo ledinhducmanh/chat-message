@@ -56,9 +56,12 @@ function escapeHTML(str) {
 
 
 
+var chatSection = document.querySelector(".chat-section")
+if (uP != access) {
+    chatSection.innerHTML = `<h1 style="padding: 20px; font-size: 30px;">YOU DON'T HAVE ANY PERMISSION FOR THAT PAGE 🤡</h1>`
+}
 
 
-if (uP == access) {
 const chatApp = {
     api: "https://lemanh-api.onrender.com/testAPI",
     date: new Date(),
@@ -189,6 +192,5 @@ function scrollConversation() {
             behavior: 'smooth'
         });
     }, 1300)
-}
 }
 
