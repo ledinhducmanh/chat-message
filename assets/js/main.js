@@ -155,7 +155,8 @@ const chatApp = {
                     chatApp.renderMessage();
                 },
             });
-        } 
+        }
+        scrollConversation()
     },
     deleteMessage(id) {
         $.ajax({
@@ -187,7 +188,7 @@ function scrollConversation() {
             top: conversationMain.scrollHeight,
             behavior: 'smooth'
         });
-    }, 500)
+    }, 1300)
 }
 }
 
