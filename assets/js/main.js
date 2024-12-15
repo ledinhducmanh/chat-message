@@ -118,7 +118,6 @@ const chatApp = {
                 console.error("Error fetching messages:", error);
             }
         });
-        scrollConversation() , 2000
     },
     copyMessage(message) {
         // Create a temporary textarea element to copy text
@@ -168,13 +167,14 @@ const chatApp = {
         });
     },
     updateMessage() {
-        setInterval(()=> {
-            this.renderMessage();
-        },9000);
+        setInterval(() => {
+            this.renderMessage(); 
+        }, 1000);
     },
     start() {
         this.renderMessage();
         this.submitMessage();
+        this.updateMessage();
     }
 };
 chatApp.start();
