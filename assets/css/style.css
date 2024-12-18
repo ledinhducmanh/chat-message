@@ -775,6 +775,20 @@ body {
         display: none;
         padding: 16px;
     }
+    .conversation-top {
+        padding: 8px 16px;
+        background-color: var(--white);
+        display: flex;
+        align-items: center;
+        z-index: 999;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+    }
+    .conversation-main {
+        margin-top: 55px !important;
+    }
 }
 /* end: Breakpoints */
 pre {
